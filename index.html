@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="crypt-share encrypts notes in your browser and shares them through URL fragments or encrypted files."
+    />
+    <title>crypt-share — encrypted notes, shared by link</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <img class="banner" src="assets/banner.svg" alt="crypt-share banner" />
+      <p class="eyebrow">Client-side encrypted sharing</p>
+      <h1>Send the secret. Keep the key.</h1>
+      <p class="lede">
+        crypt-share encrypts a note in your browser with a passphrase, then places only the
+        ciphertext in a shareable link fragment or encrypted file. Nothing is uploaded.
+      </p>
+      <div class="hero-points" aria-label="crypt-share highlights">
+        <span>AES-GCM encryption</span>
+        <span>No account</span>
+        <span>No server copy</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="card" aria-labelledby="create-heading">
+        <div class="card-heading">
+          <p class="step">01</p>
+          <div>
+            <h2 id="create-heading">Create an encrypted note</h2>
+            <p>Choose a passphrase and share it through a separate trusted channel.</p>
+          </div>
+        </div>
+
+        <form id="create-form">
+          <label for="note-text">Note</label>
+          <textarea
+            id="note-text"
+            name="note-text"
+            rows="8"
+            placeholder="Write the note you want to protect…"
+            required
+          ></textarea>
+
+          <div class="field-grid">
+            <div>
+              <label for="create-passphrase">Passphrase</label>
+              <input
+                id="create-passphrase"
+                name="create-passphrase"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Use a long, unique passphrase"
+                required
+              />
+            </div>
+            <div>
+              <label for="confirm-passphrase">Confirm passphrase</label>
+              <input
+                id="confirm-passphrase"
+                name="confirm-passphrase"
+                type="password"
+                autocomplete="new-password"
+                placeholder="Repeat the passphrase"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div>
+              <label for="expiry">Optional expiry</label>
+              <input id="expiry" name="expiry" type="datetime-local" />
+            </div>
+            <label class="check-card" for="burn-after-reading">
+              <input id="burn-after-reading" name="burn-after-reading" type="checkbox" />
+              <span>
+                <strong>Burn after reading</strong>
+                <small>Remove the fragment from this browser after a successful open.</small>
+              </span>
+            </label>
+          </div>
+
+          <button class="primary" type="submit">Encrypt note</button>
+          <p id="create-status" class="status" role="status" aria-live="polite"></p>
+        </form>
+
+        <div id="share-panel" class="share-panel" hidden>
+          <label for="share-link">Share link</label>
+          <div class="link-row">
+            <input id="share-link" type="text" readonly />
+            <button id="copy-link" type="button">Copy</button>
+          </div>
+          <button id="download-export" class="secondary" type="button">
+            Download encrypted file
+          </button>
+          <p class="hint">
+            Anyone with both this link and the passphrase can read the note. Send them separately.
+          </p>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="open-heading">
+        <div class="card-heading">
+          <p class="step">02</p>
+          <div>
+            <h2 id="open-heading">Open an encrypted note</h2>
+            <p>Open a crypt-share link or import an encrypted export file.</p>
+          </div>
+        </div>
+
+        <p id="payload-status" class="payload-status">No encrypted note loaded yet.</p>
+
+        <label for="import-file">Import encrypted file</label>
+        <input id="import-file" type="file" accept=".json,.cryptshare,application/json" />
+
+        <form id="open-form">
+          <label for="open-passphrase">Passphrase</label>
+          <input
+            id="open-passphrase"
+            name="open-passphrase"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Enter the passphrase"
+            required
+          />
+          <button class="primary" type="submit">Decrypt locally</button>
+          <p id="open-status" class="status" role="status" aria-live="polite"></p>
+        </form>
+
+        <article id="opened-panel" class="opened-panel" hidden>
+          <h3>Decrypted note</h3>
+          <p id="opened-meta" class="meta"></p>
+          <pre id="opened-note"></pre>
+        </article>
+      </section>
+
+      <section class="card security-card" aria-labelledby="security-heading">
+        <h2 id="security-heading">Security notes</h2>
+        <ul>
+          <li>The URL fragment after <code>#</code> is not sent to a web server in normal HTTP requests.</li>
+          <li>Encryption and decryption happen locally with WebCrypto AES-GCM and PBKDF2-SHA-256.</li>
+          <li>Expiry and burn-after-reading are client-side controls. They cannot erase copied links, screenshots, or notes saved by a reader.</li>
+          <li>There is no account recovery. If the passphrase is lost, the note cannot be decrypted.</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built by Lavish Gangwar. Your note stays in your browser.</p>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
